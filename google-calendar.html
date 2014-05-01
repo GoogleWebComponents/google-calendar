@@ -1,0 +1,150 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../google-signin/google-signin.html">
+<link rel="import" href="../google-apis/google-apis.html">
+
+<!--
+Element loading Google Calendar API.
+
+##### Example
+
+    <google-calendar-api id="calendar"></google-calendar-api>
+    <script>
+    window.addEventListener('api-load', function() {
+      var request = document.getElementById('calendar').api.calendarList.list();
+      request.execute(function(resp) {
+          console.log(resp);
+      });
+    });
+  </script>
+
+@element google-calendar-api
+@blurb Element loading Google Calendar API.
+@status alpha
+@url github.io
+-->
+<polymer-element name="google-calendar-api"
+                 extends="google-client-api"
+                 on-client-api-load="{{loadCalendarApi}}">
+<script>
+  Polymer({
+    notifyEvent: 'client-api-load',
+    /**
+      * Fires when the Calendar API is loaded.
+      * @event api-load
+      */
+    apiLoadedEvent: 'api-load',
+    /**
+      * A handle to the loaded API.
+      * @attribute api
+      * @type Object
+      */
+    get api() {
+      return gapi.client.calendar;
+    },
+    loadCalendarApi: function() {
+      if (!gapi.client.calendar) {
+        gapi.client.load('calendar', 'v3', (function() {
+          var result = Array.prototype.slice.call(arguments);
+          this.fire(this.apiLoadedEvent, arguments);
+        }).bind(this));
+      }
+    }
+  });
+</script>
+</polymer-element>
+
+
+<!--
+Element providing a list of Google Calendars for a signed in user.
+
+##### Example
+
+    <google-calendar-list title="What I'm up to"></google-calendar-list>
+
+@element google-calendar-list
+@blurb Element providing a list of Google Calendars for a signed in user.
+@status alpha
+@url github.io
+-->
+<polymer-element name="google-calendar-list" attributes="title">
+<template>
+  <style>
+    :host, span {
+      display: inline-block;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      font-family: Arial, sans-serif;
+      display: block;
+      list-style: none;
+      width: 300px;
+      border-radius: .2em;
+      padding: .2em;
+      margin: .2em;
+      overflow: hidden;
+    }
+
+    li a {
+      color: inherit;
+      display: block;
+      text-decoration: none;
+    }
+
+    google-signin {
+      float: right;
+    }
+  </style>
+
+  <google-calendar-api id="calendar" on-api-load="{{displayCalendars}}"></google-calendar-api>
+  <ul id="calendars" >
+    <li>
+      {{title || 'My calendars'}}
+      <google-signin
+          clientId="10830429330-loim99urps0r4fobd7c2aqjrhh32lnba.apps.googleusercontent.com"
+          scopes="https://www.googleapis.com/auth/calendar.readonly"
+          on-google-signin-success="{{signIn}}"></google-signin>
+    </li>
+    <template repeat="{{c in calendars}}">
+      <li style="background-color: {{c.backgroundColor}}">
+        <a href="https://www.google.com/calendar/embed?src={{c.id}}&ctz={{c.timeZone}}" target="_blank">
+          {{c.summary}}
+        </a>
+      </li>
+    </template>
+  </ul>
+</template>
+<script>
+  Polymer('google-calendar-list', {
+    signedIn: false,
+    /**
+      * A title to be displayed on top of the calendar list.
+      * @attribute title
+      * @type string
+      */
+    title: 'My calendars',
+    signIn: function() {
+      this.signedIn = true;
+      this.displayCalendars();
+    },
+    /**
+      * Displays the calendar list if the user is signed in to Google.
+      *
+      * @method displayCalendars
+      * @return {undefined} Returns undefined.
+      */
+    displayCalendars: function() {
+      if (this.signedIn && this.$.calendar.api) {
+        var request = this.$.calendar.api.calendarList.list();
+        request.execute((function(resp) {
+            this.calendars = resp.items;
+        }).bind(this));
+      }
+    }
+  });
+  </script>
+</polymer-element>

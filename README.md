@@ -1,7 +1,7 @@
 google-calendar
 ================
 
-See the [component page](http://polymerlabs.github.io/google-calendar) for more information.
+See the [component page](http://googlewebcomponents.github.io/google-calendar) for more information.
 
 ## Getting Started
 
