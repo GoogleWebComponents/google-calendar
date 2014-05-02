@@ -39,10 +39,11 @@ Element loading Google Calendar API.
       * @type Object
       */
     get api() {
-      return gapi.client.calendar;
+      return (window.gapi && window.gapi.client) ? window.gapi.client.calendar : undefined;
     },
     loadCalendarApi: function() {
       if (!gapi.client.calendar) {
+        gapi.client.setApiKey('AIzaSyDc30ApZEjTsanMI_YRByA8skglMNU6dXM');
         gapi.client.load('calendar', 'v3', (function() {
           var result = Array.prototype.slice.call(arguments);
           this.fire(this.apiLoadedEvent, arguments);
@@ -148,3 +149,111 @@ Element providing a list of Google Calendars for a signed in user.
   });
   </script>
 </polymer-element>
+
+
+<!--
+Element providing a list of Google Calendars for a signed in user.
+
+##### Example
+
+    <google-calendar-list title="What I'm up to"></google-calendar-list>
+
+@element google-calendar-list
+@blurb Element providing a list of Google Calendars for a signed in user.
+@status alpha
+@url github.io
+-->
+<polymer-element name="google-calendar-busy-now" attributes="calendarId busyLabel freeLabel">
+<template>
+  <style>
+
+    span {
+      font-family: Arial, sans-serif;
+      display: inline-block;
+      border-radius: .2em;
+      padding: .2em;
+      margin: .2em;
+      overflow: hidden;
+    }
+
+    .busy {
+      background-color: #FA573C;
+    }
+
+    .free {
+      background-color: #7BD148;
+    }
+
+    .na {
+      background-color: #999;
+    }
+
+
+  </style>
+
+  <google-calendar-api id="calendar" on-api-load="{{displayBusy}}"></google-calendar-api>
+
+  <span class="{{className}}">{{label}}</span>
+
+</template>
+<script>
+  Polymer('google-calendar-busy-now', {
+    /**
+      * A title to be displayed on top of the calendar list.
+      * @attribute title
+      * @type string
+      */
+    calendarId: null,
+    busyLabel: 'I\' busy',
+    freeLabel: 'I\'m free',
+    classNme: '',
+    label: '',
+    calendarIdChanged: function() {
+      this.displayBusy();
+    },
+    /**
+      * Displays the calendar list if the user is signed in to Google.
+      *
+      * @method displayCalendars
+      * @return {undefined} Returns undefined.
+      */
+    displayBusy: function() {
+      if (!this.calendarId) {
+        console.log('CalendarId is required for this component');
+        return;
+      }
+      if (this.$.calendar.api) {
+        var q = {
+          timeMin: '2014-05-01T10:50:41.734Z',
+          timeMax: '2014-05-03T14:50:41.734Z',
+          items: [
+            {
+              id: this.calendarId
+            }
+          ]
+        }
+        var request = this.$.calendar.api.freebusy.query(q);
+        request.execute((function(resp) {
+          if (resp.calendars[this.calendarId].errors) {
+            this.label = 'n/a';
+            this.className = 'na'
+            return;
+          }
+          var now = new Date();
+          for (var i = 0, busyTime; busyTime = resp.calendars[this.calendarId].busy[i]; i++) {
+            var start = new Date(busyTime.start);
+            var end = new Date(busyTime.end);
+            var busy = start < now && now < end;
+            this.label = busy ? this.busyLabel : this.freeLabel;
+            this.className = busy ? 'busy' : 'free';
+            if (busy) {
+              break;
+            }
+          }
+        }).bind(this));
+      }
+    }
+  });
+  </script>
+</polymer-element>
+

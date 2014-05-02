@@ -7,12 +7,42 @@
   <script src="../platform/platform.js"></script>
   <link rel="import" href="google-calendar.html">
 
+  <style type="text/css">
+    #calendarId {
+      vertical-align: top;
+      line-height: 20px;
+      width: 330px;
+    }
+  </style>
+
 </head>
 <body unresolved>
 
   <p>A `google-calendar-list` looks like this:</p>
-
   <google-calendar-list title="What I'm up to"></google-calendar-list>
+
+  <p>A `google-calendar-busy` looks like this:</p>
+
+  <!-- Just for demonstration purposes -->
+  <input type="text" id="calendarId" placeholder="Paste calendar ID to check availability" disabled>
+  <google-calendar-busy-now
+        calendarId="85rssq4g28omn1j1t8s4d4f06g@group.calendar.google.com"
+        busyLabel="Do not disturb" freeLabel="Talk to me!">
+  </google-calendar-busy-now>
+
+
+
+  <script type="text/javascript">
+    window.addEventListener('polymer-ready', function() {
+      var input = document.querySelector("#calendarId");
+      input.disabled = false;
+      input.onchange = function() {
+        var t = document.querySelector("google-calendar-busy-now");
+        t.calendarId = this.value;
+      }
+    });
+  </script>
+
 
 </body>
 </html>
