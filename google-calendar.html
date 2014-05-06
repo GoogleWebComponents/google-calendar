@@ -24,9 +24,11 @@ Element loading Google Calendar API.
 -->
 <polymer-element name="google-calendar-api"
                  extends="google-client-api"
+                 attributes="apikey"
                  on-client-api-load="{{loadCalendarApi}}">
 <script>
   Polymer({
+    apikey: null,
     notifyEvent: 'client-api-load',
     /**
       * Fires when the Calendar API is loaded.
@@ -43,7 +45,9 @@ Element loading Google Calendar API.
     },
     loadCalendarApi: function() {
       if (!gapi.client.calendar) {
-        gapi.client.setApiKey('AIzaSyDc30ApZEjTsanMI_YRByA8skglMNU6dXM');
+        if (this.apikey){
+          gapi.client.setApiKey(this.apikey);
+        }
         gapi.client.load('calendar', 'v3', (function() {
           var result = Array.prototype.slice.call(arguments);
           this.fire(this.apiLoadedEvent, arguments);
@@ -67,7 +71,7 @@ Element providing a list of Google Calendars for a signed in user.
 @status alpha
 @url github.io
 -->
-<polymer-element name="google-calendar-list" attributes="title">
+<polymer-element name="google-calendar-list" attributes="title apikey">
 <template>
   <style>
     :host, span {
@@ -101,7 +105,7 @@ Element providing a list of Google Calendars for a signed in user.
     }
   </style>
 
-  <google-calendar-api id="calendar" on-api-load="{{displayCalendars}}"></google-calendar-api>
+  <google-calendar-api id="calendar" apikey="{{apikey}}" on-api-load="{{displayCalendars}}"></google-calendar-api>
   <ul id="calendars" >
     <li>
       {{title || 'My calendars'}}
@@ -121,6 +125,7 @@ Element providing a list of Google Calendars for a signed in user.
 </template>
 <script>
   Polymer('google-calendar-list', {
+    apikey: null,
     signedIn: false,
     /**
       * A title to be displayed on top of the calendar list.
@@ -163,7 +168,8 @@ Element providing a list of Google Calendars for a signed in user.
 @status alpha
 @url github.io
 -->
-<polymer-element name="google-calendar-busy-now" attributes="calendarId busyLabel freeLabel">
+<polymer-element name="google-calendar-busy-now"
+                 attributes="calendarId busyLabel freeLabel apikey">
 <template>
   <style>
 
@@ -191,7 +197,7 @@ Element providing a list of Google Calendars for a signed in user.
 
   </style>
 
-  <google-calendar-api id="calendar" on-api-load="{{displayBusy}}"></google-calendar-api>
+  <google-calendar-api id="calendar" apikey="{{apikey}}" on-api-load="{{displayBusy}}"></google-calendar-api>
 
   <span class="{{className}}">{{label}}</span>
 
@@ -204,6 +210,7 @@ Element providing a list of Google Calendars for a signed in user.
       * @type string
       */
     calendarId: null,
+    apikey: null,
     busyLabel: 'I\' busy',
     freeLabel: 'I\'m free',
     classNme: '',

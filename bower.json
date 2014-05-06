@@ -5,6 +5,6 @@
   "dependencies": {
     "polymer": "Polymer/polymer#master",
     "google-apis": "PolymerLabs/google-apis",
-    "google-signin": "addyosmani/google-signin"
+    "google-signin": "GoogleWebComponents/google-signin"
   }
 }
