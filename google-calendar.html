@@ -9,44 +9,40 @@ Element loading Google Calendar API.
 
     <google-calendar-api id="calendar"></google-calendar-api>
     <script>
-    window.addEventListener('api-load', function() {
-      var request = document.getElementById('calendar').api.calendarList.list();
-      request.execute(function(resp) {
-          console.log(resp);
+      window.addEventListener('api-load', function() {
+        var request = document.getElementById('calendar').api.calendarList.list();
+        request.execute(function(resp) {
+            console.log(resp);
+        });
       });
-    });
-  </script>
+    </script>
 
 @element google-calendar-api
 @blurb Element loading Google Calendar API.
 @status alpha
-@url github.io
+@url http://googlewebcomponents.github.io/google-calendar
 -->
 <polymer-element name="google-calendar-api"
+                 attributes="version"
                  extends="google-client-api"
-                 on-client-api-load="{{loadCalendarApi}}">
+                 on-api-load="{{loadCalendarApi}}">
 <script>
-  Polymer({
-    notifyEvent: 'client-api-load',
+  Polymer('google-calendar-api', {
     /**
-      * Fires when the Calendar API is loaded.
-      * @event api-load
-      */
-    apiLoadedEvent: 'api-load',
-    /**
-      * A handle to the loaded API.
-      * @attribute api
-      * @type Object
-      */
+     * Version of the API to load, e.g. 'v3'.
+     * @attribute version
+     * @type string
+     */
+    version: 'v3',
     get api() {
-      return gapi.client.calendar;
+      return (window.gapi && window.gapi.client) ? window.gapi.client.calendar : undefined;
     },
-    loadCalendarApi: function() {
+    loadCalendarApi: function(e) {
+      e.stopPropagation();
       if (!gapi.client.calendar) {
-        gapi.client.load('calendar', 'v3', (function() {
-          var result = Array.prototype.slice.call(arguments);
-          this.fire(this.apiLoadedEvent, arguments);
-        }).bind(this));
+        gapi.client.load('calendar', this.version,
+          this.fire.bind(this, this.notifyEvent, e.detail)
+        );
       }
     }
   });
@@ -64,9 +60,9 @@ Element providing a list of Google Calendars for a signed in user.
 @element google-calendar-list
 @blurb Element providing a list of Google Calendars for a signed in user.
 @status alpha
-@url github.io
+@url http://googlewebcomponents.github.io/google-calendar
 -->
-<polymer-element name="google-calendar-list" attributes="title">
+<polymer-element name="google-calendar-list" attributes="clientId">
 <template>
   <style>
     :host, span {
@@ -101,11 +97,12 @@ Element providing a list of Google Calendars for a signed in user.
   </style>
 
   <google-calendar-api id="calendar" on-api-load="{{displayCalendars}}"></google-calendar-api>
-  <ul id="calendars" >
+  <ul id="calendars">
     <li>
       {{title || 'My calendars'}}
+      {{clientid}}
       <google-signin
-          clientId="10830429330-loim99urps0r4fobd7c2aqjrhh32lnba.apps.googleusercontent.com"
+          clientId="{{clientId}}"
           scopes="https://www.googleapis.com/auth/calendar.readonly"
           on-google-signin-success="{{signIn}}"></google-signin>
     </li>
@@ -122,26 +119,31 @@ Element providing a list of Google Calendars for a signed in user.
   Polymer('google-calendar-list', {
     signedIn: false,
     /**
-      * A title to be displayed on top of the calendar list.
-      * @attribute title
-      * @type string
-      */
+     * A title to be displayed on top of the calendar list.
+     * @attribute title
+     * @type string
+     */
     title: 'My calendars',
+    /**
+     * Application's clientId for using Calendar API.
+     * @attribute clientId
+     * @type string
+     */
+    clientId: null,
     signIn: function() {
       this.signedIn = true;
       this.displayCalendars();
     },
     /**
-      * Displays the calendar list if the user is signed in to Google.
-      *
-      * @method displayCalendars
-      * @return {undefined} Returns undefined.
-      */
+     * Displays the calendar list if the user is signed in to Google.
+     *
+     * @method displayCalendars
+     */
     displayCalendars: function() {
       if (this.signedIn && this.$.calendar.api) {
         var request = this.$.calendar.api.calendarList.list();
         request.execute((function(resp) {
-            this.calendars = resp.items;
+          this.calendars = resp.items;
         }).bind(this));
       }
     }
