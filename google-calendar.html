@@ -142,9 +142,9 @@ Element providing a list of Google Calendars for a signed in user.
     displayCalendars: function() {
       if (this.signedIn && this.$.calendar.api) {
         var request = this.$.calendar.api.calendarList.list();
-        request.execute((function(resp) {
+        request.execute(function(resp) {
           this.calendars = resp.items;
-        }).bind(this));
+        }.bind(this));
       }
     }
   });
