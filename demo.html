@@ -19,16 +19,22 @@
 <body unresolved>
 
   <p>A `google-calendar-list` looks like this:</p>
-  <google-calendar-list title="What I'm up to" apikey="AIzaSyDc30ApZEjTsanMI_YRByA8skglMNU6dXM"></google-calendar-list>
+  <google-calendar-list title="What I'm up to"
+      clientId="10830429330-loim99urps0r4fobd7c2aqjrhh32lnba.apps.googleusercontent.com">
+  </google-calendar-list>
 
   <p>A `google-calendar-busy` looks like this:</p>
 
   <!-- Just for demonstration purposes -->
-  <input type="text" id="calendarId" placeholder="Paste calendar ID to check availability" disabled>
+  <input type="text" id="calendarId"
+         placeholder="Provide calendar ID to check availability"
+         value="85rssq4g28omn1j1t8s4d4f06g@group.calendar.google.com"
+         disabled>
   <google-calendar-busy-now
         calendarId="85rssq4g28omn1j1t8s4d4f06g@group.calendar.google.com"
-        apikey="AIzaSyDc30ApZEjTsanMI_YRByA8skglMNU6dXM"
-        busyLabel="Do not disturb" freeLabel="Talk to me!">
+        apiKey="AIzaSyDc30ApZEjTsanMI_YRByA8skglMNU6dXM"
+        busyLabel="Do not disturb"
+        freeLabel="I'm free, talk to me!">
   </google-calendar-busy-now>
 
 
@@ -43,7 +49,6 @@
       }
     });
   </script>
-
 
 </body>
 </html>
