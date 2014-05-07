@@ -1,7 +1,10 @@
 {
-  "name": "untitled-element",
-  "private": true,
+  "name": "google-calendar",
+  "version": "0.0.1",
+  "private": false,
   "dependencies": {
-    "polymer": "Polymer/polymer#master"
+    "polymer": "Polymer/polymer#master",
+    "google-apis": "PolymerLabs/google-apis",
+    "google-signin": "GoogleWebComponents/google-signin"
   }
 }
