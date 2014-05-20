@@ -85,7 +85,7 @@ Element providing a list of Google Calendars for a signed in user.
 -->
 <polymer-element name="google-calendar-list" attributes="clientId">
 <template>
-  <style>
+  <style no-shim>
     :host, span {
       display: inline-block;
     }
@@ -193,7 +193,7 @@ A badge showing the free/busy status based on the events in a given calendar.
 <polymer-element name="google-calendar-busy-now"
                  attributes="calendarId busyLabel freeLabel apiKey">
   <template>
-    <style>
+    <style no-shim>
       span {
         font-family: Arial, sans-serif;
         display: inline-block;
