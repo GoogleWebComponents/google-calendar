@@ -2,74 +2,6 @@
 <link rel="import" href="../google-signin/google-signin.html">
 <link rel="import" href="../google-apis/google-client-api.html">
 
-<!--
-Element loading Google Calendar API.
-
-##### Example
-
-    <google-calendar-api id="calendar"></google-calendar-api>
-    <script>
-      window.addEventListener('api-load', function() {
-        var request = document.getElementById('calendar').api.calendarList.list();
-        request.execute(function(resp) {
-            console.log(resp);
-        });
-      });
-    </script>
-
-@element google-calendar-api
-@blurb Element loading Google Calendar API.
-@status alpha
-@url http://googlewebcomponents.github.io/google-calendar
--->
-<polymer-element name="google-calendar-api"
-                 attributes="version"
-                 extends="google-client-api"
-                 on-client-api-load="{{loadCalendarApi}}">
-<script>
-  (function() {
-    var loader = null;
-
-    Polymer('google-calendar-api', {
-      /**
-       * Called when the Calendar API is loaded.
-       * @event api-load
-       */
-      /**
-       * Version of the API to load, e.g. 'v3'.
-       * @attribute version
-       * @type string
-       */
-      version: 'v3',
-      /**
-       * Returns the loaded Calendar API.
-       * @method api
-       */
-      get api() {
-        return (window.gapi && window.gapi.client) ? window.gapi.client.calendar : undefined;
-      },
-      notify: function() {
-        this.fire('client-api-load', arguments);
-      },
-      loadCalendarApi: function(e) {
-        if (gapi.client.calendar) {
-          this.fire(this.notifyEvent, e.detail);
-        } else if (loader) {
-          loader.addEventListener(loader.notifyEvent, function() {
-            this.fire(this.notifyEvent, e.detail);
-          }.bind(this));
-        } else {
-          loader = this;
-          gapi.client.load('calendar', this.version,
-            this.fire.bind(this, this.notifyEvent, e.detail)
-          );
-        }
-      }
-    });
-  })();
-</script>
-</polymer-element>
-
 
 <!--
 Element providing a list of Google Calendars for a signed in user.
@@ -117,7 +49,9 @@ Element providing a list of Google Calendars for a signed in user.
     }
   </style>
 
-  <google-calendar-api id="calendar" on-api-load="{{displayCalendars}}"></google-calendar-api>
+  <google-api-loader id="calendar" name="calendar" version="v3"
+    on-google-api-load="{{displayCalendars}}">
+  </google-calendar-api>
   <ul id="calendars">
     <li>
       {{title || 'My calendars'}}
@@ -215,7 +149,9 @@ A badge showing the free/busy status based on the events in a given calendar.
         background-color: #999;
       }
     </style>
-    <google-calendar-api xid="2" id="calendar" on-api-load="{{displayBusy}}"></google-calendar-api>
+      <google-api-loader id="calendar" name="calendar" version="v3"
+        on-google-api-load="{{displayBusy}}">
+      </google-calendar-api>
     <span class="{{className}}">{{label}}</span>
   </template>
   <script>
