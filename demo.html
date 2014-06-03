@@ -7,6 +7,7 @@
 
   <script src="../platform/platform.js"></script>
   <link rel="import" href="google-calendar.html">
+  <link rel="import" href="../google-signin/google-signin.html">
 
   <style>
     #calendarId {
@@ -19,10 +20,13 @@
 </head>
 <body unresolved>
 
+  <google-signin
+      clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com"
+      scopes="https://www.googleapis.com/auth/calendar.readonly">
+  </google-signin>
+
   <p>A <code>&lt;google-calendar-list&gt;</code> looks like this:</p>
-  <google-calendar-list title="What I'm up to"
-      clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com">
-  </google-calendar-list>
+  <google-calendar-list title="What I'm up to"></google-calendar-list>
 
   <p>A <code>&lt;google-calendar-busy&gt;</code> looks like this:</p>
 
