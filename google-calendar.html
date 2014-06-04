@@ -45,10 +45,6 @@ that handles authentication.
       display: block;
       text-decoration: none;
     }
-
-    google-signin {
-      float: right;
-    }
   </style>
 
   <google-api-loader id="calendar" name="calendar" version="v3"
@@ -80,15 +76,12 @@ that handles authentication.
      * @type string
      */
     title: 'My calendars',
-    /**
-     * Application's clientId for using Calendar API.
-     * @attribute clientId
-     * @type string
-     */
+
     signIn: function() {
       this.signedIn = true;
       this.displayCalendars();
     },
+
     /**
      * Displays the calendar list if the user is signed in to Google.
      *
