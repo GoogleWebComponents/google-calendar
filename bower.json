@@ -4,7 +4,7 @@
   "private": false,
   "dependencies": {
     "polymer": "Polymer/polymer#master",
-    "google-apis": "PolymerLabs/google-apis",
-    "google-signin": "GoogleWebComponents/google-signin"
+    "google-apis": "PolymerLabs/google-apis#master",
+    "google-signin": "GoogleWebComponents/google-signin#master"
   }
 }
