@@ -1,6 +1,7 @@
 {
   "name": "google-calendar",
   "version": "0.0.1",
+  "main": "google-calendar.html",
   "private": false,
   "dependencies": {
     "polymer": "Polymer/polymer#master",
