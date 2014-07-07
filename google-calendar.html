@@ -5,6 +5,8 @@
 
 <!--
 Element providing a list of Google Calendars for a signed in user.
+Needs a google-signin element included somewhere on the same page
+that handles authentication.
 
 ##### Example
 
@@ -15,7 +17,7 @@ Element providing a list of Google Calendars for a signed in user.
 @status alpha
 @url http://googlewebcomponents.github.io/google-calendar
 -->
-<polymer-element name="google-calendar-list" attributes="clientId">
+<polymer-element name="google-calendar-list">
 <template>
   <style>
     :host, span {
@@ -43,22 +45,18 @@ Element providing a list of Google Calendars for a signed in user.
       display: block;
       text-decoration: none;
     }
-
-    google-signin {
-      float: right;
-    }
   </style>
 
   <google-api-loader id="calendar" name="calendar" version="v3"
     on-google-api-load="{{displayCalendars}}">
   </google-api-loader>
+  <google-signin-aware
+    scopes="https://www.googleapis.com/auth/calendar.readonly"
+    on-google-signin-aware-success="{{signIn}}"></google-signin-aware>
+
   <ul id="calendars">
     <li>
       {{title || 'My calendars'}}
-      <google-signin
-          clientId="{{clientId}}"
-          scopes="https://www.googleapis.com/auth/calendar.readonly"
-          on-google-signin-success="{{signIn}}"></google-signin>
     </li>
     <template repeat="{{c in calendars}}">
       <li style="background-color: {{c.backgroundColor}}">
@@ -71,7 +69,6 @@ Element providing a list of Google Calendars for a signed in user.
 </template>
 <script>
   Polymer('google-calendar-list', {
-    apikey: null,
     signedIn: false,
     /**
      * A title to be displayed on top of the calendar list.
@@ -79,16 +76,12 @@ Element providing a list of Google Calendars for a signed in user.
      * @type string
      */
     title: 'My calendars',
-    /**
-     * Application's clientId for using Calendar API.
-     * @attribute clientId
-     * @type string
-     */
-    clientId: null,
+
     signIn: function() {
       this.signedIn = true;
       this.displayCalendars();
     },
+
     /**
      * Displays the calendar list if the user is signed in to Google.
      *
@@ -96,7 +89,7 @@ Element providing a list of Google Calendars for a signed in user.
      */
     displayCalendars: function() {
       if (this.signedIn && this.$.calendar.api) {
-        var request = this.$.calendar.api.calendarList.list();
+        var request = this.$.calendar.api.calendarList.list({"key": ""});
         request.execute(function(resp) {
           this.calendars = resp.items;
         }.bind(this));
@@ -151,7 +144,7 @@ A badge showing the free/busy status based on the events in a given calendar.
     </style>
       <google-api-loader id="calendar" name="calendar" version="v3"
         on-google-api-load="{{displayBusy}}">
-      </google-calendar-api>
+      </google-api-loader>
     <span class="{{className}}">{{label}}</span>
   </template>
   <script>
