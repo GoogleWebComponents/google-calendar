@@ -1,7 +1,7 @@
 {
   "name": "google-calendar",
   "version": "0.0.2",
-  "homepage": "http://googlewebcomponents.github.io/google-calendar.html",
+  "homepage": "http://googlewebcomponents.github.io/google-calendar",
   "description": "Web components for working with Google Calendar",
   "main": "google-calendar.html",
   "authors": [
