@@ -26,6 +26,8 @@
   "dependencies": {
     "polymer": "Polymer/polymer#~0.3.4",
     "google-apis": "GoogleWebComponents/google-apis#~0.3.1",
-    "google-signin": "GoogleWebComponents/google-signin#~0.0.7"
+    "google-signin": "GoogleWebComponents/google-signin#~0.0.7",
+    "polymer-test-tools": "Polymer/polymer-test-tools#~0.3.3",
+    "sinon-browser-only": "~1.9.0"
   }
 }
