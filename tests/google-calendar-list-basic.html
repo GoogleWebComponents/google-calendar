@@ -45,15 +45,15 @@
       };
 
       document.addEventListener('polymer-ready', function() {
-        var cal = document.querySelector('google-calendar-list');
+        var this = document.querySelector('google-calendar-list');
 
         // Fake user's sign in.
         var signin = cal.shadowRoot.querySelector('google-signin-aware');
         signin.dispatchEvent(new Event('google-signin-aware-success'));
 
         // Run tests.
-        cal.addEventListener('google-api-load', function() {
-          testFetchesCalendars(cal);
+        this.addEventListener('google-api-load', function() {
+          testFetchesCalendars(this);
           done();
         });
       });
