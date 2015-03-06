@@ -68,7 +68,7 @@ that handles authentication.
   </ul>
 </template>
 <script>
-  Polymer('google-calendar-list', {
+  Polymer({
     signedIn: false,
     /**
      * A title to be displayed on top of the calendar list.
@@ -152,7 +152,7 @@ A badge showing the free/busy status based on the events in a given calendar.
       var MS_PER_MINUTE = 60000;
       var TIME_SPAN = 30;
 
-      Polymer('google-calendar-busy-now', {
+      Polymer({
         /**
          * Event from this calendar decide whether the status is free/busy.
          * @attribute calendarId
