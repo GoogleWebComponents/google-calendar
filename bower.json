@@ -1,6 +1,6 @@
 {
   "name": "google-calendar",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "homepage": "http://googlewebcomponents.github.io/google-calendar",
   "description": "Web components for working with Google Calendar",
   "main": "google-calendar.html",
@@ -24,9 +24,9 @@
     "google"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#~0.3.4",
-    "google-apis": "GoogleWebComponents/google-apis#~0.3.2",
-    "google-signin": "GoogleWebComponents/google-signin#~0.0.7",
+    "polymer": "Polymer/polymer#^0.5.5",
+    "google-apis": "GoogleWebComponents/google-apis#^0.4.4",
+    "google-signin": "GoogleWebComponents/google-signin#^2.0.1",
     "polymer-test-tools": "Polymer/polymer-test-tools#~0.4.0",
     "sinon-browser-only": "~1.9.0"
   }
