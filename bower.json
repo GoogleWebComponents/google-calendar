@@ -24,10 +24,11 @@
     "google"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^0.5.5",
-    "google-apis": "GoogleWebComponents/google-apis#^0.4.4",
-    "google-signin": "GoogleWebComponents/google-signin#^0.3.0",
-    "polymer-test-tools": "Polymer/polymer-test-tools#~0.4.0",
-    "sinon-browser-only": "~1.9.0"
+    "polymer": "Polymer/polymer#0.8-preview",
+    "google-apis": "GoogleWebComponents/google-apis#0.8-preview",
+    "google-signin": "GoogleWebComponents/google-signin#0.8-preview"
+  },
+  "devDependencies": {
+    "web-component-tester": "*"
   }
 }
