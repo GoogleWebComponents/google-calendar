@@ -215,11 +215,17 @@ A badge showing the free/busy status based on the events in a given calendar.
           type: String,
           value: "I'm free"
         },
+
+        className: {
+          type: String,
+          value: ''
+        },
+
+        label: {
+          type: String,
+          value: ''
+        }
       },
-
-      className: '',
-
-      label: '',
 
       calendarIdChanged: function() {
         this.displayBusy();
