@@ -55,8 +55,8 @@ that handles authentication.
     <ul id="calendars">
       <li>{{title}}</li>
       <template is="x-repeat" items="{{calendars}}">
-        <li style$="{{ computeCalStyle(item.backgroundColor)}}">
-          <a href="{{ computeCalHref(item.id, item.timeZone)}}" target="_blank">{{item.summary}}</a>
+        <li style$="{{computeCalStyle(item.backgroundColor)}}">
+          <a href="{{computeCalHref(item.id, item.timeZone)}}" target="_blank">{{item.summary}}</a>
         </li>
       </template>
     </ul>
@@ -84,7 +84,7 @@ that handles authentication.
       },
       calendars: {
         type: Array,
-        value: function() { return []}
+        value: function() { return []; }
       }
     },
 
@@ -113,8 +113,7 @@ that handles authentication.
         request.execute(function(resp) {
           if (resp.error) {
             console.error("Error with calendarList.list", resp.message)
-          }
-          else {
+          } else {
             this.calendars = resp.items;
           }
         }.bind(this));
@@ -205,7 +204,7 @@ A badge showing the free/busy status based on the events in a given calendar.
          */
         busyLabel: {
           type: String,
-          value: 'I\'m busy'
+          value: "I'm busy"
         },
         /**
          * Label to be displayed if the status is free.
@@ -214,7 +213,7 @@ A badge showing the free/busy status based on the events in a given calendar.
          */
         freeLabel: {
           type: String,
-          value: 'I\'m free'
+          value: "I'm free"
         },
       },
 
@@ -241,8 +240,7 @@ A badge showing the free/busy status based on the events in a given calendar.
           var now = new Date();
           var query = {
             timeMin: now.toISOString(),
-            timeMax: new Date(now.valueOf() +
-                TIME_SPAN * MS_PER_MINUTE).toISOString(),
+            timeMax: new Date(now.valueOf() + TIME_SPAN * MS_PER_MINUTE).toISOString(),
             items: [
               {
                 id: this.calendarId
