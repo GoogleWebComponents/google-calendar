@@ -18,10 +18,10 @@
   </style>
 
 </head>
-<body unresolved>
+<body>
 
   <google-signin
-      clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com">
+      client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com">
   </google-signin>
 
   <p>A <code>&lt;google-calendar-list&gt;</code> looks like this:</p>
@@ -29,29 +29,26 @@
 
   <p>A <code>&lt;google-calendar-busy&gt;</code> looks like this:</p>
 
-  <!-- Just for demonstration purposes -->
-  <input type="text" id="calendarId"
-         placeholder="Provide calendar ID to check availability"
-         value="85rssq4g28omn1j1t8s4d4f06g@group.calendar.google.com"
-         disabled>
   <google-calendar-busy-now
-        calendarId="85rssq4g28omn1j1t8s4d4f06g@group.calendar.google.com"
-        apiKey="AIzaSyDc30ApZEjTsanMI_YRByA8skglMNU6dXM"
-        busyLabel="Do not disturb"
-        freeLabel="I'm free, talk to me!">
+        calendar-id="85rssq4g28omn1j1t8s4d4f06g@group.calendar.google.com"
+        api-key="AIzaSyDc30ApZEjTsanMI_YRByA8skglMNU6dXM"
+        busy-label="Do not disturb"
+        free-label="I'm free, talk to me!">
   </google-calendar-busy-now>
-
-
-
+  <hr>
+  <div>
+    <!-- Just for demonstration purposes -->
+    Another calendar id:<input type="text" id="calendarId"
+           placeholder="Provide calendar ID to check availability"
+           value="85rssq4g28omn1j1t8s4d4f06g@group.calendar.google.com">
+  </div> 
   <script>
-    window.addEventListener('polymer-ready', function() {
       var input = document.querySelector("#calendarId");
       input.disabled = false;
       input.onchange = function() {
         var t = document.querySelector("google-calendar-busy-now");
         t.calendarId = this.value;
       }
-    });
   </script>
 </body>
 </html>
