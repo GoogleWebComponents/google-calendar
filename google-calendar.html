@@ -42,14 +42,14 @@ that handles authentication.
   </style>
   <template>
     <google-client-loader id="calendar" name="calendar" version="v3"
-      on-google-api-load="_displayCalendars"></google-client-loader>
+      on-google-api-load="displayCalendars"></google-client-loader>
     <google-signin-aware
       scopes="https://www.googleapis.com/auth/calendar.readonly"
       is-authorized="{{_signedIn}}"></google-signin-aware>
 
     <ul id="calendars">
       <li>{{title}}</li>
-      <template is="dom-repeat" items="{{_calendars}}">
+      <template is="dom-repeat" items="{{calendars}}">
         <li style$="{{_computeCalStyle(item.backgroundColor)}}">
           <a href="{{_computeCalHref(item.id, item.timeZone)}}" target="_blank">{{item.summary}}</a>
         </li>
@@ -76,18 +76,22 @@ that handles authentication.
         type: String,
         value: 'My calendars'
       },
-      _calendars: {
+      /**
+       * List of calendars
+       */
+      calendars: {
         type: Array,
-        value: function() { return []; }
+        value: function() { return []; },
+        readOnly: true
       }
     },
 
     _signInChanged: function(val) {
       if (val) {
-        this._displayCalendars();
+        this.displayCalendars();
       }
       else {
-        this._calendars = [];
+        this._setCalendars([]);
       }
     },
 
@@ -99,10 +103,8 @@ that handles authentication.
     },
     /**
      * Displays the calendar list if the user is signed in to Google.
-     *
-     * @method displayCalendars
      */
-    _displayCalendars: function() {
+    displayCalendars: function() {
       if (this._signedIn && this.$.calendar.api) {
           var request = this.$.calendar.api.calendarList.list({"key": ""});
 
@@ -111,7 +113,7 @@ that handles authentication.
           if (resp.error) {
             console.error("Error with calendarList.list", resp.message)
           } else {
-            this._calendars = resp.items;
+            this._setCalendars(resp.items);
           }
         }.bind(this));
       }
