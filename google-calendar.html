@@ -12,10 +12,6 @@ that handles authentication.
 
     <google-calendar-list title="What I'm up to"></google-calendar-list>
 
-@element google-calendar-list
-@blurb Element providing a list of Google Calendars for a signed in user.
-@status alpha
-@url http://googlewebcomponents.github.io/google-calendar
 -->
 <dom-module id="google-calendar-list">
   <style>
@@ -49,14 +45,13 @@ that handles authentication.
       on-google-api-load="displayCalendars"></google-client-loader>
     <google-signin-aware
       scopes="https://www.googleapis.com/auth/calendar.readonly"
-      on-google-signin-aware-success="signIn"
-      on-google-signin-aware-signed-out="signOut"></google-signin-aware>
+      is-authorized="{{_signedIn}}"></google-signin-aware>
 
     <ul id="calendars">
       <li>{{title}}</li>
-      <template is="x-repeat" items="{{calendars}}">
-        <li style$="{{computeCalStyle(item.backgroundColor)}}">
-          <a href="{{computeCalHref(item.id, item.timeZone)}}" target="_blank">{{item.summary}}</a>
+      <template is="dom-repeat" items="{{calendars}}">
+        <li style$="{{_computeCalStyle(item.backgroundColor)}}">
+          <a href="{{_computeCalHref(item.id, item.timeZone)}}" target="_blank">{{item.summary}}</a>
         </li>
       </template>
     </ul>
@@ -69,52 +64,56 @@ that handles authentication.
     is: 'google-calendar-list',
 
     properties: {
-      signedIn: {
+      _signedIn: {
         type: Boolean,
-        value: false
+        value: false,
+        observer: '_signInChanged'
       },
       /**
        * A title to be displayed on top of the calendar list.
-       * @attribute title
-       * @type string
        */
       title: {
         type: String,
         value: 'My calendars'
       },
+      /**
+       * List of calendars
+       */
       calendars: {
         type: Array,
-        value: function() { return []; }
+        value: function() { return []; },
+        readOnly: true
       }
     },
 
-    signIn: function() {
-      this.signedIn = true;
-      this.displayCalendars();
-    },
-    signOut: function() {
-      this.calendars = [];
+    _signInChanged: function(val) {
+      if (val) {
+        this.displayCalendars();
+      }
+      else {
+        this._setCalendars([]);
+      }
     },
 
-    computeCalStyle: function(backgroundColor) {
+    _computeCalStyle: function(backgroundColor) {
       return 'background-color:' + (backgroundColor || 'gray');
     },
-    computeCalHref: function(calId, calTimeZone) {
+    _computeCalHref: function(calId, calTimeZone) {
       return 'https://www.google.com/calendar/embed?src=' + calId + '&ctz=' + calTimeZone;
     },
     /**
      * Displays the calendar list if the user is signed in to Google.
-     *
-     * @method displayCalendars
      */
     displayCalendars: function() {
-      if (this.signedIn && this.$.calendar.api) {
-        var request = this.$.calendar.api.calendarList.list({"key": ""});
+      if (this._signedIn && this.$.calendar.api) {
+          var request = this.$.calendar.api.calendarList.list({"key": ""});
+
+        // var request = this.$.calendar.api.calendarList.list({"key": ""});
         request.execute(function(resp) {
           if (resp.error) {
             console.error("Error with calendarList.list", resp.message)
           } else {
-            this.calendars = resp.items;
+            this._setCalendars(resp.items);
           }
         }.bind(this));
       }
@@ -123,23 +122,6 @@ that handles authentication.
 </script>
 
 
-<!--
-A badge showing the free/busy status based on the events in a given calendar.
-
-##### Example
-
-    <google-calendar-busy-now
-        calendarId="YOUR_CAL_ID"
-        apiKey="YOUR_API_KEY"
-        busyLabel="Do not disturb"
-        freeLabel="I'm free, talk to me!">
-    </google-calendar-busy-now>
-
-@element google-calendar-busy-now
-@blurb A badge showing the free/busy status based on the events in a given calendar.
-@status alpha
-@url http://googlewebcomponents.github.io/google-calendar
--->
 <dom-module id="google-calendar-busy-now">
   <style>
     span {
@@ -166,7 +148,11 @@ A badge showing the free/busy status based on the events in a given calendar.
   <template>
       <google-client-loader id="calendar" name="calendar" version="v3"
         on-google-api-load="displayBusy"></google-client-loader>
-    <span class$="{{className}}">{{label}}</span>
+      <google-signin-aware
+        scopes="https://www.googleapis.com/auth/calendar.readonly"
+        is-authorized="{{_isAuthorized}}"></google-signin-aware>
+
+    <span class$="{{_labelClass}}">{{_label}}</span>
   </template>
 </dom-template>
 <script>
@@ -174,24 +160,33 @@ A badge showing the free/busy status based on the events in a given calendar.
     var MS_PER_MINUTE = 60000;
     var TIME_SPAN = 30;
 
+/**
+A badge showing the free/busy status based on the events in a given calendar.
+
+##### Example
+
+    <google-calendar-busy-now
+        calendarId="YOUR_CAL_ID"
+        apiKey="YOUR_API_KEY"
+        busyLabel="Do not disturb"
+        freeLabel="I'm free, talk to me!">
+    </google-calendar-busy-now>
+
+*/
     Polymer({
       is: 'google-calendar-busy-now',
 
       properties: {
         /**
          * Event from this calendar decide whether the status is free/busy.
-         * @attribute calendarId
-         * @type string
          */
         calendarId: {
           type: String,
           value: null,
-          observer: 'calendarIdChanged'
+          observer: '_calendarIdChanged'
         },
         /**
          * API key to use with Calendar API requests.
-         * @attribute apiKey
-         * @type string
          */
         apiKey: {
           type: String,
@@ -199,8 +194,6 @@ A badge showing the free/busy status based on the events in a given calendar.
         },
         /**
          * Label to be displayed if the status is busy.
-         * @attribute busyLabel
-         * @type string
          */
         busyLabel: {
           type: String,
@@ -208,35 +201,63 @@ A badge showing the free/busy status based on the events in a given calendar.
         },
         /**
          * Label to be displayed if the status is free.
-         * @attribute freeLabel
-         * @type string
          */
         freeLabel: {
           type: String,
           value: "I'm free"
         },
 
-        className: {
+        _labelClass: {
           type: String,
           value: ''
         },
 
-        label: {
+        _label: {
           type: String,
           value: ''
+        },
+
+        _isAuthorized: {
+          type: Boolean,
+          value: false,
+          observer: '_isAuthorizedChanged'
         }
       },
 
-      calendarIdChanged: function() {
+      _calendarIdChanged: function() {
         this.displayBusy();
       },
+
+      _isAuthorizedChanged: function() {
+        this.displayBusy();
+      },
+
+      _setState: function(state) {
+        switch(state) {
+          case 'free':
+            this._label = this.freeLabel;
+            this._labelClass = 'free';
+            break;
+          case 'busy':
+            this._label = this.busyLabel;
+            this._labelClass = 'busy';
+            break;
+          case 'na':
+            this._label = 'n/a';
+            this._labelClass = 'na';
+            break;
+        };
+      },
       /**
-        * Displays the busy/free status.
-        * @method displayBusy
+        * Displays the busy/free status. Use it to refresh label state
         */
       displayBusy: function() {
         if (!this.calendarId) {
           console.log('CalendarId is required for this component');
+          return;
+        }
+        if (!this._isAuthorized) {
+          this._setState('na');
           return;
         }
         if (this.$.calendar.api) {
@@ -256,13 +277,15 @@ A badge showing the free/busy status based on the events in a given calendar.
           var request = this.$.calendar.api.freebusy.query(query);
           request.execute(function(resp) {
             if (!resp.calendars) {
-              this.label = this.freeLabel;
-              this.className = 'free';
+              if (resp.error) {
+                this._setState('na');
+              } else {
+                this._setState('free');
+              }
               return;
             }
             if (resp.calendars[this.calendarId].errors) {
-              this.label = 'n/a';
-              this.className = 'na'
+              this._setState('na');
               return;
             }
             var now = new Date();
@@ -271,8 +294,7 @@ A badge showing the free/busy status based on the events in a given calendar.
               var start = new Date(busyTime.start);
               var end = new Date(busyTime.end);
               var busy = start < now && now < end;
-              this.label = busy ? this.busyLabel : this.freeLabel;
-              this.className = busy ? 'busy' : 'free';
+              this._setState( busy ? 'busy': 'free');
               if (busy) {
                 break;
               }
