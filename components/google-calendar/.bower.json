@@ -1,0 +1,41 @@
+{
+  "name": "google-calendar",
+  "homepage": "https://googlewebcomponents.github.io/google-calendar",
+  "description": "Web components for working with Google Calendar",
+  "main": "google-calendar.html",
+  "authors": [
+    "Ewa Gasperowicz"
+  ],
+  "license": "Apache2",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/demo/"
+  ],
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "calendar",
+    "google"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0",
+    "google-apis": "GoogleWebComponents/google-apis#^1.0",
+    "google-signin": "GoogleWebComponents/google-signin#^1.0"
+  },
+  "devDependencies": {
+    "web-component-tester": "*",
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
+  },
+  "_release": "dcf3b08352",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "dcf3b08352226d9fbd0733d4d008d484d870c387"
+  },
+  "_source": "git://github.com/GoogleWebComponents/google-calendar.git",
+  "_target": "master",
+  "_originalSource": "GoogleWebComponents/google-calendar",
+  "_direct": true
+}
