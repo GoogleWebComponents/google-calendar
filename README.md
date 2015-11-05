@@ -1,4 +1,4 @@
 google-calendar
 ================
 
-See the [component page](http://googlewebcomponents.github.io/google-calendar) for more information.
+See https://elements.polymer-project.org/elements/google-calendar
