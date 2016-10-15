@@ -4,12 +4,15 @@
     <meta charset="utf-8">
   	<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
     <title>google-calendar tests</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
   </head>
   <body>
     <script>
       WCT.loadSuites([
-        'google-calendar-list-basic.html'
+        'google-calendar-list-basic.html',
+        'google-calendar-list-basic.html?dom-shadow'
       ]);
     </script>
   </body>

@@ -5,12 +5,12 @@
     <meta charset="utf-8">
     <meta name='viewport' content='width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes'>
     <title>google-plusone Basic Tests</title>
-    <script src="../../webcomponentsjs/webcomponentsjs.min.js"></script>
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
     <link rel="import" href="../google-calendar.html">
   </head>
   <body>
-  
+
     <google-calendar-list title="What I'm up to"></google-calendar-list>
 
     <script>
@@ -45,15 +45,15 @@
       };
 
       document.addEventListener('polymer-ready', function() {
-        var this = document.querySelector('google-calendar-list');
+        var gcl = document.querySelector('google-calendar-list');
 
         // Fake user's sign in.
         var signin = cal.shadowRoot.querySelector('google-signin-aware');
         signin.dispatchEvent(new Event('google-signin-aware-success'));
 
         // Run tests.
-        this.addEventListener('google-api-load', function() {
-          testFetchesCalendars(this);
+        gcl.addEventListener('google-api-load', function() {
+          testFetchesCalendars(gcl);
           done();
         });
       });
